@@ -1,13 +1,16 @@
 > **Espejo de solo lectura** — publicado desde
-> [\](https://github.com/roberto-ayala/raylang/tree/main/packages/rpc);
+> [`raylang/packages/rpc`](https://github.com/roberto-ayala/raylang/tree/main/packages/rpc);
 > el desarrollo y los PRs van al monorepo.
 >
-> **Instalación** — en tu \:
+> **Instalación** — en tu `ray.toml`:
 >
-> \\\
+> ```toml
+> [registry]
+> index = "git+https://github.com/ray-language/ray-index@main"
+> ```
 >
-> y \ — o la dependencia directa:
-> \.
+> y `ray add rpc` — o la dependencia directa:
+> `rpc = "git+https://github.com/ray-language/rpc@v0.1.0"`.
 
 # `rpc` — RPC raylang↔raylang (adicional, **no** embebido)
 
