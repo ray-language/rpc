@@ -1,3 +1,5 @@
+# `rpc` — RPC raylang↔raylang (adicional, **no** embebido)
+
 > **Espejo de solo lectura** — publicado desde
 > [`raylang/packages/rpc`](https://github.com/roberto-ayala/raylang/tree/main/packages/rpc);
 > el desarrollo y los PRs van al monorepo.
@@ -12,7 +14,6 @@
 > y `ray add rpc` — o la dependencia directa:
 > `rpc = "git+https://github.com/ray-language/rpc@v0.1.0"`.
 
-# `rpc` — RPC raylang↔raylang (adicional, **no** embebido)
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
 framing con **prefijo de longitud sobre TCP** y **JSON** como payload v1, escrito EN raylang puro
@@ -20,7 +21,7 @@ sobre `std/net` + `std/json`. Para interop externo *entrante* ya está el webser
 esto es para hablar servicio-a-servicio con id, deadline y trace en el sobre.
 
 Tier 2 del ecosistema (paquete adicional, como `net`/`db`; política de tiers en DESIGN §53). Se
-consume por dependencia de ruta/git en `ray.toml`:
+declara en `ray.toml` (por ruta en el monorepo; git desde el espejo publicado):
 
 ```toml
 [dependencies]
