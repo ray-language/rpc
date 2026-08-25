@@ -1,3 +1,14 @@
+> **Espejo de solo lectura** — publicado desde
+> [\](https://github.com/roberto-ayala/raylang/tree/main/packages/rpc);
+> el desarrollo y los PRs van al monorepo.
+>
+> **Instalación** — en tu \:
+>
+> \\\
+>
+> y \ — o la dependencia directa:
+> \.
+
 # `rpc` — RPC raylang↔raylang (adicional, **no** embebido)
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
@@ -10,7 +21,7 @@ consume por dependencia de ruta/git en `ray.toml`:
 
 ```toml
 [dependencies]
-rpc = "path:../raylang/packages/rpc"
+rpc = "git+https://github.com/ray-language/rpc@v0.1.0"
 ```
 
 ## El protocolo
@@ -78,7 +89,7 @@ Handlers concurrentes no pueden compartir UN `Client` (la conexión es secuencia
 hasta `size` llamadas **en vuelo a la vez** — una conexión por hueco, que es también paralelismo
 real del lado servidor (una fibra por conexión):
 
-```raylang
+```rust
 let p = rpc.pool("127.0.0.1", 7070, 8);
 // desde CUALQUIER fibra, a la vez:
 let r = rpc.pool_call(p, "consulta", params);                 // aparca si el pool está agotado
