@@ -4,15 +4,16 @@
 > [`raylang/packages/rpc`](https://github.com/ray-language/raylang/tree/main/packages/rpc);
 > el desarrollo y los PRs van al monorepo.
 >
-> **Instalación** — en tu `ray.toml`:
+> **Instalación** — `ray add rpc` en tu proyecto (el índice oficial va por defecto), o a
+> mano en `ray.toml`:
 >
 > ```toml
-> [registry]
-> index = "git+https://github.com/ray-language/ray-index@main"
+> [dependencies]
+> rpc = "^0.1.1"
 > ```
 >
-> y `ray add rpc` — o la dependencia directa:
-> `rpc = "git+https://github.com/ray-language/rpc@v0.1.0"`.
+> Sin índice, la dependencia git directa:
+> `rpc = "git+https://github.com/ray-language/rpc@v0.1.1"`.
 
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
@@ -25,7 +26,7 @@ declara en `ray.toml` (por ruta en el monorepo; git desde el espejo publicado):
 
 ```toml
 [dependencies]
-rpc = "git+https://github.com/ray-language/rpc@v0.1.0"
+rpc = "git+https://github.com/ray-language/rpc@v0.1.1"
 ```
 
 ## El protocolo
@@ -65,7 +66,9 @@ fn main() -> int {
   cablea `signals()` (SIGTERM/SIGINT → dejar de aceptar, drenar con plazo, devolver 0);
   `serve_shutdown[_limits]` apaga con cualquier canal `stop` (testeable sin señales); `serve` es
   la forma que bloquea para siempre. **Un solo bucle**: `serve` = `serve_shutdown` con un canal
-  que nunca llega.
+  que nunca llega. M306: `serve_on[_shutdown[_limits]](listener, …)` sirven sobre un listener ya
+  abierto (`net.tcp_listen(host, 0)` + `net.local_port` = puerto efímero sin carrera: tests y apps
+  de escritorio).
 - Límites: `Limits { max_frame_bytes }` (default 10 MiB) — un peer hostil no puede hacer
   reservar memoria sin tope.
 
