@@ -9,11 +9,11 @@
 >
 > ```toml
 > [dependencies]
-> rpc = "^0.1.1"
+> rpc = "^0.1.2"
 > ```
 >
 > Sin índice, la dependencia git directa:
-> `rpc = "git+https://github.com/ray-language/rpc@v0.1.1"`.
+> `rpc = "git+https://github.com/ray-language/rpc@v0.1.2"`.
 
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
@@ -26,7 +26,7 @@ declara en `ray.toml` (por ruta en el monorepo; git desde el espejo publicado):
 
 ```toml
 [dependencies]
-rpc = "git+https://github.com/ray-language/rpc@v0.1.1"
+rpc = "git+https://github.com/ray-language/rpc@v0.1.2"
 ```
 
 ## El protocolo
