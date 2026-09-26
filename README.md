@@ -9,11 +9,11 @@
 >
 > ```toml
 > [dependencies]
-> rpc = "^0.1.2"
+> rpc = "^0.1.3"
 > ```
 >
 > Sin índice, la dependencia git directa:
-> `rpc = "git+https://github.com/ray-language/rpc@v0.1.2"`.
+> `rpc = "git+https://github.com/ray-language/rpc@v0.1.3"`.
 
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
@@ -26,7 +26,7 @@ declara en `ray.toml` (por ruta en el monorepo; git desde el espejo publicado):
 
 ```toml
 [dependencies]
-rpc = "git+https://github.com/ray-language/rpc@v0.1.2"
+rpc = "git+https://github.com/ray-language/rpc@v0.1.3"
 ```
 
 ## El protocolo
@@ -108,7 +108,14 @@ rpc.pool_close(p);
   automática**: un fallo (timeout, id inesperado, cierre del peer) descarta la conexión y deja el
   hueco vacío — la siguiente llamada re-marca. El "disconnect y reconecta" manual desaparece.
 - El pool ES un canal acotado: checkout = `recv` (la fibra aparca si los `size` huecos están en
-  vuelo → backpressure natural), release = `send`.
+  vuelo → backpressure natural), release = `send`. Desde 0.1.3 el checkout **prefiere una conexión
+  ya marcada** a marcar otra (antes las primeras `size` llamadas abrían `size` conexiones aunque
+  llegaran de una en una).
+- **Reintento** (0.1.3): si una conexión **reutilizada** falla por el cable (el servidor se
+  reinició, el peer cerró, la escritura falló), el pool la reemplaza y repite la llamada UNA vez.
+  Un timeout, un id inesperado o un error del handler no se repiten. Para métodos no
+  idempotentes: `rpc.pool_call_with(p, m, params, PoolCallOpts { deadline_ms: 0, traceparent: "",
+  retry: false })` (o `var o = rpc.pool_opts(); o.retry = false;`).
 
 ## Tests
 
