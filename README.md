@@ -1,19 +1,17 @@
 # `rpc` — RPC raylang↔raylang (adicional, **no** embebido)
 
-> **Espejo de solo lectura** — publicado desde
-> [`raylang/packages/rpc`](https://github.com/ray-language/raylang/tree/main/packages/rpc);
-> el desarrollo y los PRs van al monorepo.
+> **Read-only mirror** — published from [`https://github.com/ray-language/raylang/tree/main/packages/rpc`](https://github.com/ray-language/raylang/tree/main/packages/rpc); development and pull requests go there.
 >
-> **Instalación** — `ray add rpc` en tu proyecto (el índice oficial va por defecto), o a
-> mano en `ray.toml`:
+> **Install** — `ray add rpc` in your project (the official index is the default), or by
+> hand in `ray.toml`:
 >
 > ```toml
 > [dependencies]
-> rpc = "^0.1.3"
+> rpc = "^0.2.0"
 > ```
 >
-> Sin índice, la dependencia git directa:
-> `rpc = "git+https://github.com/ray-language/rpc@v0.1.3"`.
+> Without an index, the direct git dependency:
+> `rpc = "git+https://github.com/ray-language/rpc@v0.2.0"`.
 
 
 La **comunicación nativa entre servicios** raylang (M88.4), sin el peso de un servidor HTTP/2:
@@ -22,12 +20,15 @@ sobre `std/net` + `std/json`. Para interop externo *entrante* ya está el webser
 esto es para hablar servicio-a-servicio con id, deadline y trace en el sobre.
 
 Tier 2 del ecosistema (paquete adicional, como `net`/`db`; política de tiers en DESIGN §53). Se
-declara en `ray.toml` (por ruta en el monorepo; git desde el espejo publicado):
+añade desde el índice de paquetes con `ray add rpc`, que lo declara en tu `ray.toml` y lo fija en
+`ray.lock`:
 
 ```toml
 [dependencies]
-rpc = "git+https://github.com/ray-language/rpc@v0.1.3"
+rpc = "^0.2.0"
 ```
+
+Dentro del monorepo de raylang se puede usar la ruta (`rpc = "path:../raylang/packages/rpc"`).
 
 ## El protocolo
 
@@ -69,8 +70,12 @@ fn main() -> int {
   que nunca llega. M306: `serve_on[_shutdown[_limits]](listener, …)` sirven sobre un listener ya
   abierto (`net.tcp_listen(host, 0)` + `net.local_port` = puerto efímero sin carrera: tests y apps
   de escritorio).
-- Límites: `Limits { max_frame_bytes }` (default 10 MiB) — un peer hostil no puede hacer
-  reservar memoria sin tope.
+- Límites: `Limits { max_frame_bytes, frame_timeout_ms, idle_timeout_ms }` (defaults 10 MiB, 30 s,
+  0): un peer hostil no puede hacer reservar memoria sin tope, ni dejar un frame a medias
+  ocupando su conexión (0.2.0: el frame empezado tiene `frame_timeout_ms` para completarse, y un
+  peer que gotea octetos no renueva el plazo). `idle_timeout_ms > 0` cierra en silencio la
+  conexión que pasa ese tiempo sin empezar un frame; por defecto no (un pool de clientes mantiene
+  sus conexiones abiertas). `serve_shutdown_limits`/`serve_on_shutdown_limits` los reciben.
 
 ## Cliente
 
